@@ -14,6 +14,7 @@ import js.html.InputElement;
 import js.html.URL;
 import js.html.MediaStream;
 import js.html.MediaStreamConstraints;
+import js.jquery.JQuery;
 import clm.tracker.ClmTracker;
 
 class Main {
@@ -90,12 +91,8 @@ class Main {
 
 		_image     = document.createCanvasElement();
 		_wireframe = document.createCanvasElement();
-		_video     = document.createVideoElement();
+		_video     = untyped new JQuery('<video autoplay playsinline></video>').get(0);
 		_board     = document.getElementById('board');
-
-		_video.autoplay = true;
-		_video.loop     = true;
-		_video.setAttribute('playsinline','true');
 
 		_board.appendChild(_image);
 		_board.appendChild(_wireframe);

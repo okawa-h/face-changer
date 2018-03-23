@@ -40,11 +40,8 @@ Main.onChange = function(event) {
 Main.setup = function() {
 	Main._image = window.document.createElement("canvas");
 	Main._wireframe = window.document.createElement("canvas");
-	Main._video = window.document.createElement("video");
+	Main._video = $("<video autoplay playsinline></video>").get(0);
 	Main._board = window.document.getElementById("board");
-	Main._video.autoplay = true;
-	Main._video.loop = true;
-	Main._video.setAttribute("playsinline","true");
 	Main._board.appendChild(Main._image);
 	Main._board.appendChild(Main._wireframe);
 	Main._board.appendChild(Main._video);
