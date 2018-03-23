@@ -236,25 +236,38 @@ class Main {
 		// _video.src = src;
 
 		// var constraints:MediaStreamConstraints = { video:true,audio:false };
-		var constraints:MediaStreamConstraints = untyped { audio:false,video:{ facingMode:'user' }};
-		var getUserMedia = untyped __js__('navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia');
-		getUserMedia.call(Browser.navigator,constraints,function (stream:MediaStream) {
+		// var getUserMedia = untyped __js__('navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia');
 
-			_video.onloadedmetadata = function() {
+		untyped navigator.getUserMedia({ audio:false,video:{ facingMode:'user' }},function(stream:MediaStream) {
+
+			_video.onloadedmetadata = function(event) {
 
 				drawVideo(_video);
 
-			};
-
-			_video.src = URL.createObjectURL(stream);
-			_video.load();
+			}
+			_video.srcObject = stream;
 
 		},function(event) {
 
-			Browser.alert
-			(event.name + ' : ' + event.message);
+			Browser.alert(event.name + ' : ' + event.message);
 			
 		});
+		// getUserMedia.call(Browser.navigator,constraints,function (stream:MediaStream) {
+
+		// 	_video.onloadedmetadata = function() {
+
+		// 		drawVideo(_video);
+
+		// 	};
+
+		// 	_video.src = URL.createObjectURL(stream);
+		// 	_video.load();
+
+		// },function(event) {
+
+		// 	Browser.alert(event.name + ' : ' + event.message);
+			
+		// });
 
 	}
 

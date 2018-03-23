@@ -138,17 +138,13 @@ Main.loadImage = function(src) {
 };
 Main.loadVideo = function(src) {
 	Main.log("Analyze...");
-	var constraints = { audio : false, video : { facingMode : "user"}};
-	var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-	var tmp = window.navigator;
-	getUserMedia.call(tmp,constraints,function(stream) {
-		Main._video.onloadedmetadata = function() {
+	navigator.getUserMedia({ audio : false, video : { facingMode : "user"}},function(stream) {
+		Main._video.onloadedmetadata = function(event) {
 			Main.drawVideo(Main._video);
 		};
-		Main._video.src = URL.createObjectURL(stream);
-		Main._video.load();
-	},function(event) {
-		js_Browser.alert(event.name + " : " + event.message);
+		Main._video.srcObject = stream;
+	},function(event1) {
+		js_Browser.alert(event1.name + " : " + event1.message);
 	});
 };
 Main.draw = function(image) {
