@@ -138,7 +138,7 @@ Main.loadImage = function(src) {
 };
 Main.loadVideo = function(src) {
 	Main.log("Analyze...");
-	navigator.getUserMedia({ audio : false, video : { facingMode : "user"}},function(stream) {
+	navigator.getUserMedia({ audio : false, video : { facingMode : { exact : "environment"}}},function(stream) {
 		Main._video.onloadedmetadata = function(event) {
 			Main.drawVideo(Main._video);
 		};
