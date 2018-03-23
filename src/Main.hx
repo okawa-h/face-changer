@@ -236,7 +236,7 @@ class Main {
 		// _video.src = src;
 
 		// var constraints:MediaStreamConstraints = { video:true,audio:false };
-		var constraints:MediaStreamConstraints = untyped { audio:false,video:{ facingMode: { exact: 'environment' } }};
+		var constraints:MediaStreamConstraints = untyped { audio:false,video:{ facingMode:'user' }};
 		var getUserMedia = untyped __js__('navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia');
 		getUserMedia.call(Browser.navigator,constraints,function (stream:MediaStream) {
 
