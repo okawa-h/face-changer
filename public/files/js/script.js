@@ -40,7 +40,7 @@ Main.onChange = function(event) {
 Main.setup = function() {
 	Main._image = window.document.createElement("canvas");
 	Main._wireframe = window.document.createElement("canvas");
-	Main._video = $("<video autoplay playsinline></video>").get(0);
+	Main._video = $("<video autoplay playsinline muted></video>").get(0);
 	Main._board = window.document.getElementById("board");
 	Main._board.appendChild(Main._image);
 	Main._board.appendChild(Main._wireframe);
@@ -49,7 +49,6 @@ Main.setup = function() {
 Main.loop = function(timeStamp) {
 	Main._requestAnimation = window.requestAnimationFrame(Main.loop);
 	Main._image.getContext("2d",null).drawImage(Main._video,0,0);
-	js_Browser.alert("loop");
 	Main.clearCanvas(Main._wireframe);
 	if(Main._ctrack.getCurrentPosition()) {
 		var posiList = Main._ctrack.getCurrentPosition();

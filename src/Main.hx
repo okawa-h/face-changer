@@ -91,7 +91,7 @@ class Main {
 
 		_image     = document.createCanvasElement();
 		_wireframe = document.createCanvasElement();
-		_video     = untyped new JQuery('<video autoplay playsinline></video>').get(0);
+		_video     = untyped new JQuery('<video autoplay playsinline muted></video>').get(0);
 		_board     = document.getElementById('board');
 
 		_board.appendChild(_image);
@@ -104,7 +104,6 @@ class Main {
 
 		_requestAnimation = window.requestAnimationFrame(loop);
 		_image.getContext2d().drawImage(_video, 0, 0);
-		Browser.alert('loop');
 		clearCanvas(_wireframe);
 
 		if (_ctrack.getCurrentPosition()) {
@@ -232,9 +231,6 @@ class Main {
 		// 	drawVideo(_video);
 		// }
 		// _video.src = src;
-
-		// var constraints:MediaStreamConstraints = { video:true,audio:false };
-		// var getUserMedia = untyped __js__('navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia');
 
 		function onSuccess(stream:MediaStream) {
 
