@@ -138,7 +138,7 @@ Main.loadImage = function(src) {
 };
 Main.loadVideo = function(src) {
 	Main.log("Analyze...");
-	var constraints = { video : true, audio : false};
+	var constraints = { audio : false, video : { facingMode : { exact : "environment"}}};
 	var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 	var tmp = window.navigator;
 	getUserMedia.call(tmp,constraints,function(stream) {
