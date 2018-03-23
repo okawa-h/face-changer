@@ -104,6 +104,7 @@ class Main {
 
 		_requestAnimation = window.requestAnimationFrame(loop);
 		_image.getContext2d().drawImage(_video, 0, 0);
+		Browser.alert('loop');
 		clearCanvas(_wireframe);
 
 		if (_ctrack.getCurrentPosition()) {

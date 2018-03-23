@@ -49,6 +49,7 @@ Main.setup = function() {
 Main.loop = function(timeStamp) {
 	Main._requestAnimation = window.requestAnimationFrame(Main.loop);
 	Main._image.getContext("2d",null).drawImage(Main._video,0,0);
+	js_Browser.alert("loop");
 	Main.clearCanvas(Main._wireframe);
 	if(Main._ctrack.getCurrentPosition()) {
 		var posiList = Main._ctrack.getCurrentPosition();
