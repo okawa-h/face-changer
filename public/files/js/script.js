@@ -138,14 +138,16 @@ Main.loadImage = function(src) {
 };
 Main.loadVideo = function(src) {
 	Main.log("Analyze...");
-	navigator.getUserMedia({ audio : false, video : { facingMode : { exact : "environment"}}},function(stream) {
+	var onSuccess = function(stream) {
 		Main._video.onloadedmetadata = function(event) {
 			Main.drawVideo(Main._video);
 		};
 		Main._video.srcObject = stream;
-	},function(event1) {
-		js_Browser.alert(event1.name + " : " + event1.message);
-	});
+	};
+	var onError = function(message) {
+		js_Browser.alert(message);
+	};
+	navigator.getUserMedia({ audio : false, video : { facingMode : { exact : "environment"}}},onSuccess,onError);
 };
 Main.draw = function(image) {
 	var width = Main._image.width = Main._wireframe.width = image.width;

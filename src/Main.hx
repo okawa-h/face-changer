@@ -238,36 +238,22 @@ class Main {
 		// var constraints:MediaStreamConstraints = { video:true,audio:false };
 		// var getUserMedia = untyped __js__('navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia');
 
-		untyped navigator.getUserMedia({ audio:false,video:{ facingMode: { exact:'environment' } }},function(stream:MediaStream) {
+		function onSuccess(stream:MediaStream) {
 
 			_video.onloadedmetadata = function(event) {
-
 				drawVideo(_video);
-
 			}
 			_video.srcObject = stream;
 
-		},function(event) {
+		}
 
-			Browser.alert(event.name + ' : ' + event.message);
+		function onError(message:String) {
+
+			Browser.alert(message);
 			
-		});
-		// getUserMedia.call(Browser.navigator,constraints,function (stream:MediaStream) {
+		}
 
-		// 	_video.onloadedmetadata = function() {
-
-		// 		drawVideo(_video);
-
-		// 	};
-
-		// 	_video.src = URL.createObjectURL(stream);
-		// 	_video.load();
-
-		// },function(event) {
-
-		// 	Browser.alert(event.name + ' : ' + event.message);
-			
-		// });
+		untyped navigator.getUserMedia({ audio:false,video:{ facingMode: { exact: 'environment' } }},onSuccess,onError);
 
 	}
 
