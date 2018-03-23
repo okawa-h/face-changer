@@ -1,0 +1,4 @@
+-main Main
+-js public/files/js/script.js
+-cp /Applications/MAMP/htdocs/library/haxe/jp/okawa/js/clmtrackr/
+-cp src/
