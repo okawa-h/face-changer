@@ -6,6 +6,7 @@ DeviceCamera.init = function(callback) {
 	DeviceCamera._video = window.document.createElement("video");
 	DeviceCamera._video.autoplay = true;
 	DeviceCamera._video.setAttribute("playsinline","true");
+	DeviceCamera._video.style.display = "none";
 };
 DeviceCamera.getVideo = function() {
 	return DeviceCamera._video;
@@ -83,10 +84,27 @@ Main.setup = function() {
 	Main._board.appendChild(Main._wireframe);
 	Main._board.appendChild(DeviceCamera.getVideo());
 };
+Main.load = function() {
+	Log.say("Analyze...");
+	DeviceCamera.access(function() {
+		Main.start(DeviceCamera.getVideo());
+	});
+};
+Main.start = function(video) {
+	var width = Main._image.width = Main._wireframe.width = video.videoWidth;
+	var height = Main._image.height = Main._wireframe.height = video.videoHeight;
+	Main._board.style.width = width + "px";
+	Main._board.style.height = height + "px";
+	Main.update();
+	Log.say("Success");
+	Main._ctrack.reset();
+	Main._ctrack.init(pModel);
+	Main._ctrack.start(Main._image);
+};
 Main.update = function(timeStamp) {
 	Main._requestAnimation = window.requestAnimationFrame(Main.update);
 	Main._image.getContext("2d",null).drawImage(DeviceCamera.getVideo(),0,0);
-	Main.clearCanvas(Main._wireframe);
+	Main.clear(Main._wireframe);
 	if(Main._ctrack.getCurrentPosition()) {
 		var posiList = Main._ctrack.getCurrentPosition();
 		var leftEyebrows_0 = posiList[19];
@@ -164,24 +182,7 @@ Main.getMaxMin = function(array) {
 	}
 	return { max : max, min : min};
 };
-Main.load = function() {
-	Log.say("Analyze...");
-	DeviceCamera.access(function() {
-		Main.drawVideo(DeviceCamera.getVideo());
-	});
-};
-Main.drawVideo = function(video) {
-	var width = Main._image.width = Main._wireframe.width = video.videoWidth;
-	var height = Main._image.height = Main._wireframe.height = video.videoHeight;
-	Main._board.style.width = width + "px";
-	Main._board.style.height = height + "px";
-	Main.update();
-	Log.say("Success");
-	Main._ctrack.reset();
-	Main._ctrack.init(pModel);
-	Main._ctrack.start(Main._image);
-};
-Main.clearCanvas = function(canvas) {
+Main.clear = function(canvas) {
 	canvas.getContext("2d",null).clearRect(0,0,canvas.width,canvas.height);
 };
 Main.onClmtrackrConverged = function() {

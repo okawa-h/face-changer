@@ -16,8 +16,7 @@ class Main {
 	private static var _board    :Element;
 	private static var _image    :CanvasElement;
 	private static var _wireframe:CanvasElement;
-
-	private static var _ctrack:ClmTracker;
+	private static var _ctrack   :ClmTracker;
 	private static var _requestAnimation:Int;
 
 	public static function main():Void {
@@ -56,11 +55,44 @@ class Main {
 
 	}
 
+	private static function load():Void {
+
+		Log.say('Analyze...');
+		// _video.onloadedmetadata = function() {
+		// 	start(_video);
+		// }
+		// var cache:Float = Math.random() * 100 * Math.random();
+		// _video.src = 'files/video/video.mp4?$cache';
+
+		DeviceCamera.access(function() {
+
+			start(DeviceCamera.getVideo());
+
+		});
+
+	}
+
+	private static function start(video:VideoElement):Void {
+
+		var width :Int = _image.width  = _wireframe.width  = video.videoWidth;
+		var height:Int = _image.height = _wireframe.height = video.videoHeight;
+		_board.style.width  = width  + 'px';
+		_board.style.height = height + 'px';
+
+		update();
+
+		Log.say('Success');
+		_ctrack.reset();
+		_ctrack.init(untyped pModel);
+		_ctrack.start(_image);
+
+	}
+
 	private static function update(?timeStamp:Float):Void {
 
 		_requestAnimation = window.requestAnimationFrame(update);
 		_image.getContext2d().drawImage(DeviceCamera.getVideo(), 0, 0);
-		clearCanvas(_wireframe);
+		clear(_wireframe);
 
 		if (_ctrack.getCurrentPosition()) {
 
@@ -164,40 +196,7 @@ class Main {
 
 	}
 
-	private static function load():Void {
-
-		Log.say('Analyze...');
-		// _video.onloadedmetadata = function() {
-		// 	drawVideo(_video);
-		// }
-		// var cache:Float = Math.random() * 100 * Math.random();
-		// _video.src = 'files/video/video.mp4?$cache';
-
-		DeviceCamera.access(function() {
-
-			drawVideo(DeviceCamera.getVideo());
-
-		});
-
-	}
-
-	private static function drawVideo(video:VideoElement):Void {
-
-		var width :Int = _image.width  = _wireframe.width  = video.videoWidth;
-		var height:Int = _image.height = _wireframe.height = video.videoHeight;
-		_board.style.width  = width  + 'px';
-		_board.style.height = height + 'px';
-
-		update();
-
-		Log.say('Success');
-		_ctrack.reset();
-		_ctrack.init(untyped pModel);
-		_ctrack.start(_image);
-
-	}
-
-	private static function clearCanvas(canvas:CanvasElement) {
+	private static function clear(canvas:CanvasElement) {
 
 		canvas.getContext2d().clearRect(0, 0, canvas.width, canvas.height);
 
