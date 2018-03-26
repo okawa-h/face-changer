@@ -6,7 +6,7 @@ DeviceCamera.init = function(callback) {
 	DeviceCamera._video = window.document.createElement("video");
 	DeviceCamera._video.autoplay = true;
 	DeviceCamera._video.setAttribute("playsinline","true");
-	DeviceCamera._video.style.display = "none";
+	DeviceCamera._video.style.opacity = "0";
 };
 DeviceCamera.getVideo = function() {
 	return DeviceCamera._video;

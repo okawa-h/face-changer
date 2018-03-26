@@ -14,7 +14,7 @@ class DeviceCamera {
 		_video = Browser.document.createVideoElement();
 		_video.autoplay = true;
 		_video.setAttribute('playsinline','true');
-		_video.style.display = 'none';
+		_video.style.opacity = '0';
 
 	}
 
