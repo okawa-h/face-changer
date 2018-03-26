@@ -4,7 +4,6 @@ import js.Browser;
 import js.html.VideoElement;
 import js.html.MediaStream;
 import js.html.MediaStreamConstraints;
-import js.jquery.JQuery;
 
 class DeviceCamera {
 
