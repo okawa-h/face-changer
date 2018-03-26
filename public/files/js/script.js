@@ -18,7 +18,7 @@ DeviceCamera.access = function(callback) {
 	var onError = function(message) {
 		js_Browser.alert(message);
 	};
-	navigator.getUserMedia({ audio : false, video : { facingMode : { exact : "environment"}}},onSuccess,onError);
+	navigator.getUserMedia({ audio : false, video : { facingMode : "user"}},onSuccess,onError);
 };
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;

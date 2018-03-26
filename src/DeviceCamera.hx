@@ -43,7 +43,8 @@ class DeviceCamera {
 		untyped navigator.getUserMedia({
 			audio:false,
 			video:{
-				facingMode: { exact: 'environment' }
+				// facingMode: { exact: 'environment' }
+				facingMode:'user'
 			}
 		},onSuccess,onError);
 
