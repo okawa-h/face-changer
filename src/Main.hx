@@ -1,33 +1,21 @@
 package ;
 
-import js.Browser;
 import js.Browser.document;
 import js.Browser.window;
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import js.html.Element;
 import js.html.VideoElement;
-import js.html.FileReader;
 import js.html.Image;
-import js.html.InputEvent;
-import js.html.InputElement;
-import js.html.URL;
-import js.html.MediaStream;
-import js.html.MediaStreamConstraints;
-import js.jquery.JQuery;
 import clm.tracker.ClmTracker;
+import Material;
+import Log;
 
 class Main {
 
-	private static var _log      :Element;
 	private static var _board    :Element;
 	private static var _image    :CanvasElement;
 	private static var _wireframe:CanvasElement;
-	private static var _video    :VideoElement;
-	private static var _input    :InputElement;
-
-	private static var _leftEye :Image;
-	private static var _rightEye:Image;
 
 	private static var _ctrack:ClmTracker;
 	private static var _requestAnimation:Int;
@@ -40,50 +28,19 @@ class Main {
 
 	private static function init():Void {
 
-		_leftEye = new Image();
-		_leftEye.onload = function() {
-		}
-		_leftEye.src = 'files/img/left.png';
-
-		_rightEye = new Image();
-		_rightEye.onload = function() {
-		}
-		_rightEye.src = 'files/img/right.png';
-
-		_log = document.getElementById('log');
+		Log.init();
+		DeviceCamera.init();
+		Log.say('Initialize...');
 
 		setup();
 
 		_ctrack = new ClmTracker();
-		_video.style.display = 'none';
-		// loadImage('files/img/image.png');
 
-		var cache:Float = Math.random() * 100 * Math.random();
-		loadVideo('files/video/video.mp4?$cache');
+		Material.init(function() {
+	
+			load();
 
-		_input = cast document.querySelector('[data-js="inputimage"]');
-		_input.addEventListener('change',onChange);
-
-	}
-
-	private static function onChange(event:InputEvent) {
-
-		window.cancelAnimationFrame(_requestAnimation);
-
-		document.removeEventListener(clmtrackrConverged, onClmtrackrConverged);
-		document.removeEventListener(clmtrackrLost, onClmtrackrLost);
-
-		_ctrack.stop();
-		clearCanvas(_image);
-		clearCanvas(_wireframe);
-
-		var reader:FileReader = new FileReader();
-		reader.onload = function() {
-
-			loadImage(reader.result);
-
-		}
-		reader.readAsDataURL(_input.files.item(0));
+		});
 
 	}
 
@@ -91,19 +48,18 @@ class Main {
 
 		_image     = document.createCanvasElement();
 		_wireframe = document.createCanvasElement();
-		_video     = untyped new JQuery('<video autoplay playsinline muted></video>').get(0);
 		_board     = document.getElementById('board');
 
 		_board.appendChild(_image);
 		_board.appendChild(_wireframe);
-		_board.appendChild(_video);
+		_board.appendChild(DeviceCamera.getVideo());
 
 	}
 
-	private static function loop(?timeStamp:Float):Void {
+	private static function update(?timeStamp:Float):Void {
 
-		_requestAnimation = window.requestAnimationFrame(loop);
-		_image.getContext2d().drawImage(_video, 0, 0);
+		_requestAnimation = window.requestAnimationFrame(update);
+		_image.getContext2d().drawImage(DeviceCamera.getVideo(), 0, 0);
 		clearCanvas(_wireframe);
 
 		if (_ctrack.getCurrentPosition()) {
@@ -150,7 +106,7 @@ class Main {
 				posiList[16],posiList[17],posiList[18],posiList[22],posiList[21],posiList[20],posiList[19]
 			];
 
-			var ctx:CanvasRenderingContext2D = _wireframe.getContext2d();
+			var wireframeCtx:CanvasRenderingContext2D = _wireframe.getContext2d();
 			// ctx.beginPath();
 			// ctx.moveTo(outline[0][0],outline[0][1]);
 			// for (path in outline) ctx.lineTo(path[0],path[1]);
@@ -172,26 +128,25 @@ class Main {
 
 			var SIZE_RATIO:Int = 5;
 
-			var posiYList:Array<Float> = [];
-			for (posi in leftEye) posiYList.push(posi[1]);
-			var posiY:{max:Float,min:Float} = getMaxMin(posiYList);
+			var leftEyeImage :Image = Material.getImage('leftEye');
+			var leftPosiYList:Array<Float> = [];
+			for (posi in leftEye) leftPosiYList.push(posi[1]);
+			var leftPosiY:{max:Float,min:Float} = getMaxMin(leftPosiYList);
 
-			var height:Float = (posiY.max - posiY.min) * SIZE_RATIO;
-			var ratio :Float = (height) / _leftEye.height;
+			var leftH    :Float = (leftPosiY.max - leftPosiY.min) * SIZE_RATIO;
+			var leftRatio:Float = (leftH) / leftEyeImage.height;
+			var leftEyeW :Float = leftEyeImage.width * leftRatio;
+			wireframeCtx.drawImage(leftEyeImage,posiList[27][0] - leftEyeW*.5,posiList[27][1] - leftH*.5,leftEyeW,leftH);
 
-			var rightEyeW:Float = _leftEye.width * ratio;
-			ctx.drawImage(_leftEye,posiList[27][0] - rightEyeW*.5,posiList[27][1] - height*.5,rightEyeW,height);
+			var rightEyeImage :Image = Material.getImage('rightEye');
+			var rightPosiYList:Array<Float> = [];
+			for (posi in rightEye) rightPosiYList.push(posi[1]);
+			var rightPosiY:{max:Float,min:Float} = getMaxMin(rightPosiYList);
 
-
-			var posiYList:Array<Float> = [];
-			for (posi in rightEye) posiYList.push(posi[1]);
-			var posiY:{max:Float,min:Float} = getMaxMin(posiYList);
-
-			var height:Float = (posiY.max - posiY.min) * SIZE_RATIO;
-			var ratio :Float = (height) / _rightEye.height;
-
-			var rightEyeW:Float = _rightEye.width * ratio;
-			ctx.drawImage(_rightEye,posiList[32][0] - rightEyeW*.5,posiList[32][1] - height*.5,rightEyeW,height);
+			var rightH    :Float = (rightPosiY.max - rightPosiY.min) * SIZE_RATIO;
+			var rightRatio:Float = (rightH) / rightEyeImage.height;
+			var rightEyeW :Float = rightEyeImage.width * rightRatio;
+			wireframeCtx.drawImage(rightEyeImage,posiList[32][0] - rightEyeW*.5,posiList[32][1] - rightH*.5,rightEyeW,rightH);
 
 		}
 
@@ -200,74 +155,29 @@ class Main {
 	private static function getMaxMin(array:Array<Float>):{max:Float,min:Float} {
 
 		var min:Float = array[0];
-		var max:Float = array[0];
-		for (target in array) {
-			min = Math.min(min,target);
-			max = Math.max(max,target);
+		var max:Float = min;
+		for (value in array) {
+			min = Math.min(min,value);
+			max = Math.max(max,value);
 		}
-
 		return { max:max,min:min };
 
 	}
 
-	private static function loadImage(src:String):Void {
+	private static function load():Void {
 
-		log('Analyze...');
-		var image:Image = new Image();
-		image.onload = function() {
-
-			draw(image);
-
-		}
-
-		image.src = src;
-
-	}
-
-	private static function loadVideo(src:String):Void {
-
-		log('Analyze...');
+		Log.say('Analyze...');
 		// _video.onloadedmetadata = function() {
 		// 	drawVideo(_video);
 		// }
-		// _video.src = src;
+		// var cache:Float = Math.random() * 100 * Math.random();
+		// _video.src = 'files/video/video.mp4?$cache';
 
-		function onSuccess(stream:MediaStream) {
+		DeviceCamera.access(function() {
 
-			_video.onloadedmetadata = function(event) {
-				drawVideo(_video);
-			}
-			_video.srcObject = stream;
+			drawVideo(DeviceCamera.getVideo());
 
-		}
-
-		function onError(message:String) {
-
-			Browser.alert(message);
-			
-		}
-
-		untyped navigator.getUserMedia({ audio:false,video:{ facingMode: { exact: 'environment' } }},onSuccess,onError);
-
-	}
-
-	private static function draw(image:Image):Void {
-
-		var width :Int = _image.width  = _wireframe.width  = image.width;
-		var height:Int = _image.height = _wireframe.height = image.height;
-
-		_board.style.width  = width  + 'px';
-		_board.style.height = height + 'px';
-		_image.getContext2d().drawImage(image, 0, 0, width,height);
-
-		loop();
-
-		document.addEventListener(clmtrackrConverged, onClmtrackrConverged);
-		document.addEventListener(clmtrackrLost,onClmtrackrLost);
-
-		_ctrack.reset();
-		_ctrack.init(untyped pModel);
-		_ctrack.start(_image);
+		});
 
 	}
 
@@ -275,16 +185,12 @@ class Main {
 
 		var width :Int = _image.width  = _wireframe.width  = video.videoWidth;
 		var height:Int = _image.height = _wireframe.height = video.videoHeight;
-
 		_board.style.width  = width  + 'px';
 		_board.style.height = height + 'px';
-		_image.getContext2d().drawImage(video, 0, 0);
 
-		loop();
+		update();
 
-		// document.addEventListener(clmtrackrConverged, onClmtrackrConverged);
-		// document.addEventListener(clmtrackrLost,onClmtrackrLost);
-
+		Log.say('Success');
 		_ctrack.reset();
 		_ctrack.init(untyped pModel);
 		_ctrack.start(_image);
@@ -302,7 +208,7 @@ class Main {
 		document.removeEventListener(clmtrackrConverged, onClmtrackrConverged);
 		document.removeEventListener(clmtrackrLost, onClmtrackrLost);
 
-		log('Success');
+		Log.say('Success');
 		window.cancelAnimationFrame(_requestAnimation);
 
 	}
@@ -312,15 +218,9 @@ class Main {
 		document.removeEventListener(clmtrackrConverged, onClmtrackrConverged);
 		document.removeEventListener(clmtrackrLost, onClmtrackrLost);
 
-		log('Not found');
+		Log.say('Not found');
 		window.cancelAnimationFrame(_requestAnimation);
 		_ctrack.stop();
-
-	}
-
-	private static function log(message:String):Void {
-
-		_log.textContent = message;
 
 	}
 
