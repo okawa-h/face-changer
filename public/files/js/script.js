@@ -3,7 +3,9 @@
 var DeviceCamera = function() { };
 DeviceCamera.__name__ = true;
 DeviceCamera.init = function(callback) {
-	DeviceCamera._video = $("<video autoplay playsinline></video>").get(0);
+	DeviceCamera._video = window.document.createElement("video");
+	DeviceCamera._video.autoplay = true;
+	DeviceCamera._video.setAttribute("playsinline","true");
 };
 DeviceCamera.getVideo = function() {
 	return DeviceCamera._video;

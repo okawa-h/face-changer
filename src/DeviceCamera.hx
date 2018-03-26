@@ -12,7 +12,10 @@ class DeviceCamera {
 
 	public static function init(?callback:Void->Void):Void {
 
-		_video = untyped new JQuery('<video autoplay playsinline></video>').get(0);
+		// _video = untyped new JQuery('<video autoplay playsinline></video>').get(0);
+		_video = Browser.document.createVideoElement();
+		_video.autoplay = true;
+		_video.setAttribute('playsinline','true');
 		// _video.style.display = 'none';
 
 	}
