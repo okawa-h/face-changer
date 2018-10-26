@@ -10,6 +10,7 @@ import js.html.Image;
 import clm.tracker.ClmTracker;
 import Material;
 import Log;
+import ClmTrackerTools;
 
 class Main {
 
@@ -96,21 +97,8 @@ class Main {
 
 		if (_ctrack.getCurrentPosition()) {
 
-			var posiList:Position = _ctrack.getCurrentPosition();
+			var mask:Mask = new Mask(_ctrack.getCurrentPosition());
 			// _ctrack.draw(_wireframe);
-
-			var leftEyebrows :Position = [posiList[19],posiList[20],posiList[21],posiList[22]];
-			var rightEyebrows:Position = [posiList[18],posiList[17],posiList[16],posiList[15]];
-			var leftEye:Position = [
-				posiList[23],posiList[63],posiList[24],posiList[64],
-				posiList[25],posiList[65],posiList[26],posiList[66],
-				posiList[27]
-			];
-			var rightEye:Position = [
-				posiList[30],posiList[68],posiList[29],posiList[67],
-				posiList[28],posiList[70],posiList[31],posiList[69],
-				posiList[32]
-			];
 
 			// var areaPosi :Position     = [];
 			// var posiXList:Array<Float> = [];
@@ -131,12 +119,6 @@ class Main {
 			// ctx.beginPath();
 			// ctx.fillRect(minX,minY,maxX - minX,maxY - minY);
 
-
-			var outline:Position = [
-				posiList[0],posiList[1],posiList[2],posiList[3],posiList[4],posiList[5],posiList[6],posiList[7],
-				posiList[8],posiList[9],posiList[10],posiList[11],posiList[12],posiList[13],posiList[14],posiList[15],
-				posiList[16],posiList[17],posiList[18],posiList[22],posiList[21],posiList[20],posiList[19]
-			];
 
 			var wireframeCtx:CanvasRenderingContext2D = _wireframe.getContext2d();
 			// ctx.beginPath();
@@ -162,23 +144,26 @@ class Main {
 
 			var leftEyeImage :Image = Material.getImage('leftEye');
 			var leftPosiYList:Array<Float> = [];
-			for (posi in leftEye) leftPosiYList.push(posi[1]);
+			for (posi in mask.get('eyeFrameLeft')) leftPosiYList.push(posi[1]);
 			var leftPosiY:{max:Float,min:Float} = getMaxMin(leftPosiYList);
 
-			var leftH    :Float = (leftPosiY.max - leftPosiY.min) * SIZE_RATIO;
-			var leftRatio:Float = (leftH) / leftEyeImage.height;
-			var leftEyeW :Float = leftEyeImage.width * leftRatio;
-			wireframeCtx.drawImage(leftEyeImage,posiList[27][0] - leftEyeW*.5,posiList[27][1] - leftH*.5,leftEyeW,leftH);
+			var heightL:Float = (leftPosiY.max - leftPosiY.min) * SIZE_RATIO;
+			var ratioL :Float = heightL / leftEyeImage.height;
+			var eyeLW  :Float = leftEyeImage.width * ratioL;
+			var eyeL   :Array<Float> = mask.get('eyeLeft')[0];
+			wireframeCtx.drawImage(leftEyeImage,eyeL[0] - eyeLW*.5,eyeL[1] - heightL*.5,eyeLW,heightL);
+
 
 			var rightEyeImage :Image = Material.getImage('rightEye');
 			var rightPosiYList:Array<Float> = [];
-			for (posi in rightEye) rightPosiYList.push(posi[1]);
+			for (posi in mask.get('eyeFrameRight')) rightPosiYList.push(posi[1]);
 			var rightPosiY:{max:Float,min:Float} = getMaxMin(rightPosiYList);
 
-			var rightH    :Float = (rightPosiY.max - rightPosiY.min) * SIZE_RATIO;
-			var rightRatio:Float = (rightH) / rightEyeImage.height;
-			var rightEyeW :Float = rightEyeImage.width * rightRatio;
-			wireframeCtx.drawImage(rightEyeImage,posiList[32][0] - rightEyeW*.5,posiList[32][1] - rightH*.5,rightEyeW,rightH);
+			var heightR:Float = (rightPosiY.max - rightPosiY.min) * SIZE_RATIO;
+			var ratioR :Float = heightR / rightEyeImage.height;
+			var eyeRW  :Float = rightEyeImage.width * ratioR;
+			var eyeR   :Array<Float> = mask.get('eyeRight')[0];
+			wireframeCtx.drawImage(rightEyeImage,eyeR[0] - eyeRW*.5,eyeR[1] - heightR*.5,eyeRW,heightR);
 
 		}
 
