@@ -41,7 +41,7 @@ class Material {
 				counter++;
 			};
 			image.src = SOURCE_LIST[key];
-			
+
 		}
 
 	}

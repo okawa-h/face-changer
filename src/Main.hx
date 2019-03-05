@@ -37,7 +37,7 @@ class Main {
 		_ctrack = new ClmTracker();
 
 		Material.init(function() {
-	
+
 			load();
 
 		});

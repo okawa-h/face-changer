@@ -38,7 +38,7 @@ class DeviceCamera {
 		function onError(message:String) {
 
 			Browser.alert(message);
-			
+
 		}
 
 		untyped navigator.getUserMedia({
